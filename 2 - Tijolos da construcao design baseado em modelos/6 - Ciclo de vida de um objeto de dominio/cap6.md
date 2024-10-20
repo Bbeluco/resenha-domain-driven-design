@@ -69,6 +69,60 @@ Ambos os casos tem seus pros e contras, e cabe como decisao na hora de modelar u
 
 (O repositorio guarda as informacoes que serao usadas pela fabrica para criar determinados objetos em runtime)
 
-No fim, essa ideia de repositorio eh a mesma que ja temos vigente hoje (2024) quando vamos estudar/usar spring boot por exemplo. Nos vamos no banco de dados e ele vai nos retornar informacoes que dentro do framework serao usadas para criarmos determinado objeto.
+No fim, essa ideia de repositorio eh a mesma que ja temos vigente hoje (2024) quando vamos estudar/usar spring boot por exemplo. Nos vamos no banco de dados e ele vai nos retornar informacoes que dentro do framework serao usadas para criarmos determinado objeto. A questao de pesquisa acaba ocorrendo de forma super similar tambem (no fundo esse eh o objetivo de termos repositorios em nosso sistema)
 
 O unico ponto que o livro acaba batendo mais eh em relacao a **quais dados aquele determinado repositorio vai acessar**. Criar a correta divisao de quais dados serao expostos (via entidade raiz) e quais dados serao obtidos atraves da raiz (quais objetos agregados vamos obter ao pesquisar pela raiz), eh o ponto que devemos tomar cuidado ao modelar nossos sistema
+
+Os repositorios tem a capacidade de ser um ponto de consulta a banco de dados que em linhas gerais serao ocultas de nosso cliente final. A ideia de se criar um repositorio existe para que o "cliente" (codigo que deseja determinada acao) nao veja de fato a implementacao que esta ocorrendo por debaixo dos panos, no fim ele so requisita e funciona. Se o repositorio mudar para o cliente sera transparente.
+
+### Relacao entre repositorios e fabricas
+As fabricas sao responsaveis por cuidarem do inicio do ciclo de vida de um objeto. Ja os repositorios cuidam do meio/final da vida daquele objeto.
+
+Se formos levar ao pe da letra, quando um repositorio encontra informacoes do objeto no banco de dados e cria um objeto a partir dele, ele tem um comportamento de uma fabrica. Isso eh correto afirmar mas o autor alega que seja interessante mantermos (em nossa fala) uma certa distancia entre esses 2 conceitos.
+
+De modo geral:
+**Fabricas:** Sao usadas pra criar objetos do zero
+**Repositorios:** Sao utilizados para resgatar objetos salvos em um banco de dados
+
+Quando o livro afirma que um agregado so pode ser acessado pela entidade raiz, o que exatamente ele quer dizer com isso? (traduzindo para codigo)
+
+Imagine que temos uma tabela chamada _Carro_, essa tabela possui uma outra tabela relacionada chamada _Pneus_
+
+A representacao disso em um codigo Java ficaria mais ou menos assim:
+
+CarroEntity.Java
+```Java
+@Entity
+public class Carro {
+
+  @Id
+  @GeneratedValue(strategy=GenerationType.AUTO)
+  private Long id;
+  private String modelo;
+  private Pneus pneus;
+}
+```
+
+PneuEntity.Java
+```Java
+@Entity
+public class Pneu {
+
+  @Id
+  @GeneratedValue(strategy=GenerationType.AUTO)
+  private Long id;
+  private String modelo;
+}
+```
+
+CarroRepository.Java
+```Java
+public interface CustomerRepository extends CrudRepository<Carro, Long> {
+
+  List<Carro> findByModelo(String lastName);
+  Carro findById(long id);
+}
+```
+
+Repare que nesse exemplo que esta escrito a interface do repositorio so consegue acessar _Carro_, se ela quiser por acaso encontrar o pneu relacionado aquele carro primeiro precisa encontrar carro para so depois conseguir encontrar os pneus
+(OBS: Obvio que existem questoes como quantidade de relacoes 1 pra N, N pra N. Eu apenas simplifiquei aqui o exemplo)
