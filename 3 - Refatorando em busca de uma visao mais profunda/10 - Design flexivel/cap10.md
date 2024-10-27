@@ -19,3 +19,9 @@ Na visao do autor, uma divisao ideal de dominio eh aquele que no maximo suas ref
 
 # Classes autonomas
 Quanto menos interdependencia uma classe tiver, mais simples de entender ela. Essa logica deve ser buscada em cada uma das classes do projeto. Obvio que haverao casos onde alcancar isso nao sera possivel, mas eh fundamental que o dev pelo menos tente, restando assim apenas dependencias essenciais.
+
+# Especificacoes
+A ideia que o autor quer passar eh a seguinte:
+
+Temos a regra ABC (esta precisa ser isolada para que possamos ter uma boa visao do pq ela existe). Ao inves de eu implementar essa regra diretamente eu crio classes (que farao AND, OR e NOT) para que mais declarativo ainda minha regra.
+Honestamente vejo um pouco de ganho sim (principalmente em logicas complexas onde poderiamos aplicar esses conceitos), mas acho que adicionar ainda mais codigo ao inves de so fazer um _AND_, _OR_ e _NOT_ nao seja algo TAAAAO bom assim pois criaria muito codigo "desnecessario"
