@@ -24,3 +24,14 @@ A ideia eh exatamente o que a gente conhece hoje como CI/CD (nesse caso so a par
 A ideia eh basicamente a seguinte:
 
 temos 2 equipes, as 2 vao acabar usando a parte X do modelo. Ao inves de criarmos codigos duplicados, como ambas estao alterando mesmo lugar nos criamos um pacto que esse nucleo so eh alterado se as 2 partes estiverem de acordo (e obviamente o nucleo precisa estar coberto por testes). Dessa forma, garantiremos que o nosso modelo ainda tera contextos bem definidos so que agora com multipla participacao
+
+## Anticorruption layer
+A ideia eh basicamente a seguinte:
+
+Voce tem um sistema A que depende do sistema B. 
+O sistema B eh legado e ele sera migrado. 
+Na migracao eh criado B2.
+B2 nao se comporta exatamente como B e por isso apresenta side effects no sistema A
+Uma camada de _anticorruption_ eh criada so pro sistema A ir se comunicando com o sistema B2 como se estivesse falando com o legado
+
+(Isso acontece pq em migracoes mesmo que somente de tipos primitivos podemos acabar tendo comportamentos diferentes dada a plataforma. Entao eh mais seguro so criar uma camada de comunicacao pra nao impactar os "clientes" daquele codigo)
